@@ -91,7 +91,7 @@ $(document).ready(function() {
         var score = $('#score').val();
 
         $.ajax({
-            url: 'http://127.0.0.1:3000/check_rank',  // Backend URL
+            url: 'https://rankprediction.onrender.com/check_rank',  // Backend URL
             method: 'POST',
             contentType: 'application/json',
             data: JSON.stringify({ name: name, score: score }),  // Send JSON
