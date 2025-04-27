@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rank Predictor</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <!-- Custom CSS for additional styling -->
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(45deg, #FF6F61, #FFB6C1);
+            padding: 30px 0;
+        }
+        .container {
+            max-width: 450px;
+            margin: auto;
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 15px rgba(0,0,0,0.2);
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .btn-submit {
+            background-color: #4CAF50;
+            color: white;
+            font-size: 18px;
+            border-radius: 5px;
+            padding: 10px;
+            width: 100%;
+            border: none;
+        }
+        .btn-submit:hover {
+            background-color: #45a049;
+        }
+        #result {
+            margin-top: 20px;
+            font-weight: bold;
+            color: #333;
+            text-align: center;
+        }
+        .success {
+            color: #28a745;
+        }
+        .error {
+            color: #dc3545;
+        }
+        .card-header {
+            background: #FF6F61;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="card">
+        <div class="card-header text-center">
+            <h2>Rank Predictor</h2>
+        </div>
+        <div class="card-body">
+            <form id="rankForm">
+                <div class="form-group">
+                    <label for="name">Name</label>
+                    <input type="text" id="name" class="form-control" placeholder="Enter your name" required />
+                </div>
+                <div class="form-group">
+                    <label for="score">Score</label>
+                    <input type="number" id="score" class="form-control" placeholder="Enter your score" required />
+                </div>
+                <button type="submit" class="btn-submit">Predict Rank</button>
+            </form>
+            <p id="result"></p>
+        </div>
+    </div>
+</div>
+
+<!-- jQuery and Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+$(document).ready(function() {
+    $('#rankForm').submit(function(event) {
+        event.preventDefault(); // Stop normal form submit
+
+        var name = $('#name').val();
+        var score = $('#score').val();
+
+        $.ajax({
+            url: 'http://127.0.0.1:3000/check_rank',  // Backend URL
+            method: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({ name: name, score: score }),  // Send JSON
+            success: function(response) {
+                console.log(response);
+                if (response.status === 'success') {
+                    $('#result').html('<span class="success">Success: ' + response.message + '</span><br><br>Your Predicted Rank: <strong>' + Math.round(response.rank) + '</strong>');
+                } else {
+                    $('#result').html('<span class="error">Error: ' + response.message + '</span>');
+                }
+            },
+            error: function(xhr, status, error) {
+                console.log('AJAX Error:', error);
+                $('#result').html('<span class="error">An error occurred. Please try again.</span>');
+            }
+        });
+    });
+});
+</script>
+
+</body>
+</html>
